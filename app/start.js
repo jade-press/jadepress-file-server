@@ -58,7 +58,16 @@ exports.start = function() {
 	//routes
 	let
 	Router = require('koa-router')
-	,apis = require('../doc/api').accesses
+	,apis = [
+		{
+			url: '/file/:file'
+			,method: 'get'
+			,name: 'download file'
+			,desc: ''
+			,lib: 'lib/file'
+			,func: 'file'
+		}
+	]
 	,route = new Router()
 
 	middlewares.push(tools.accessLog)
@@ -67,13 +76,13 @@ exports.start = function() {
 
 		let api = apis[i]
 
-		let p = /^\//.test(api.lib)?
-						api.lib:
-						path.resolve(__dirname, '../', api.lib)
+		let p = path.resolve(__dirname, '../', api.lib)
 
 		route[api.method](api.url, require(p)[api.func])
 
 	}
+
+
 
 	middlewares.push( route.routes() )
 	middlewares.push( route.allowedMethods() )
@@ -97,6 +106,8 @@ exports.init = function* (config) {
 	,local = require('./local')
 	Object.assign(setting, config.setting)
 	Object.assign(local, config.local)
+
+	setting.dbCols = [ setting.bucketName + '.files' ]
 
 	let
 	tools = require('../lib/tools')
