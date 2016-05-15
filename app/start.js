@@ -8,10 +8,6 @@
 let
 koa = require('koa')
 ,compress = require('koa-compress')
-,serve = require('koa-static')
-,conditional = require('koa-conditional-get')
-,etag = require('koa-etag')
-,bodyParser = require('koa-bodyparser')
 ,mount = require('koa-mount')
 ,router = require('koa-router')
 ,path = require('path')
@@ -22,21 +18,10 @@ koa = require('koa')
 
 //middlewares
 exports.middlewares = [
-	
-	conditional()
 
-	// parse application/x-www-form-urlencoded
-	,bodyParser()
-
-	,etag()
-
-	,compress({
+	compress({
 		threshold: 2048
 		,flush: require('zlib').Z_SYNC_FLUSH
-	})
-
-	,serve( path.resolve(__dirname, '../public'), {
-		maxAge: oneYear
 	})
 
 ]
